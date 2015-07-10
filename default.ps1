@@ -41,8 +41,5 @@ function Compile( $buildConfig ) {
 }
 
 function Zip($files, $output) {
-    if((Get-Module pscx) -eq $null) {
-        throw "PSCX module must be installed for zipping capabilities."
-    }
     $files | Write-Zip -OutputPath $output
 }
