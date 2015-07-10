@@ -1,0 +1,12 @@
+﻿{
+  "ID":"176690627AB54C8381A7FD99A3519F42",
+  "ActionKeyword":"runner",
+  "Name":"Wox.Plugin.Runner",
+  "Description":"Create command aliases in Wox",
+  "Author":"jessebarocio",
+  "Version":"1.0.0",
+  "Language":"csharp",
+  "Website":"http://www.barocio.net",
+  "IcoPath": "Images\\globe.png",
+  "ExecuteFileName":"Wox.Plugin.Runner.dll"
+}
