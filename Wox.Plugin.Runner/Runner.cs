@@ -11,25 +11,13 @@ namespace Wox.Plugin.Runner
     {
         PluginInitContext initContext;
 
-        IEnumerable<Command> commands = new List<Command>()
-        {
-            new Command
-            {
-                Description = "Visual Studio",
-                Shortcut = "vs",
-                Path = @"C:\config\shortcuts\VisualStudio.lnk"
-            },
-            new Command
-            {
-                Description = "Visual Studio (Administrator)",
-                Shortcut = "vsadmin",
-                Path = @"C:\config\shortcuts\VisualStudioAdmin.lnk"
-            }
-        };
+        IEnumerable<Command> commands = null;
 
         public void Init( PluginInitContext context )
         {
             initContext = context;
+            var loader = new CommandLoader();
+            commands = loader.LoadCommands();
         }
 
         public List<Result> Query( Query query )
@@ -49,14 +37,10 @@ namespace Wox.Plugin.Runner
                             }
                             catch ( Win32Exception ex )
                             {
-                                if ( ex.Message == "The operation was canceled by the user" )
-                                {
-                                    // do nothing
-                                }
-                                else
-                                {
+                                // If a command needs elevation and the user hits "No" on the UAC dialog an exception is thrown
+                                // with this message. We want to ignore this exception but throw any others.
+                                if ( ex.Message != "The operation was canceled by the user" )
                                     throw;
-                                }
                             }
                             return true;
                         }
