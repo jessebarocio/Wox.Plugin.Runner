@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -42,7 +43,21 @@ namespace Wox.Plugin.Runner
                     IcoPath = "Images\\globe.png",
                     Action = e =>
                         {
-                            Process.Start( c.Path );
+                            try
+                            {
+                                Process.Start( c.Path );
+                            }
+                            catch ( Win32Exception ex )
+                            {
+                                if ( ex.Message == "The operation was canceled by the user" )
+                                {
+                                    // do nothing
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
                             return true;
                         }
                 } );
