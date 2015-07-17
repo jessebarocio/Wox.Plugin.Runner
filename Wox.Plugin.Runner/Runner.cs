@@ -1,13 +1,17 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
+using Wox.Plugin.Runner.Services;
+using Wox.Plugin.Runner.Settings;
 
 namespace Wox.Plugin.Runner
 {
-    public class Runner : IPlugin
+    public class Runner : IPlugin, ISettingProvider
     {
         PluginInitContext initContext;
 
@@ -15,9 +19,12 @@ namespace Wox.Plugin.Runner
 
         public void Init( PluginInitContext context )
         {
+            if ( !SimpleIoc.Default.IsRegistered<IMessageService>() )
+            {
+                SimpleIoc.Default.Register<IMessageService>( () => new MessageService() );
+            }
             initContext = context;
-            var loader = new CommandLoader();
-            commands = loader.LoadCommands();
+            commands = RunnerConfiguration.GetCommands();
         }
 
         public List<Result> Query( Query query )
@@ -27,8 +34,6 @@ namespace Wox.Plugin.Runner
             var matches = commands.Where( c => c.Shortcut.StartsWith( commandName ) ).Select( c => new Result()
                 {
                     Title = c.Description,
-                    SubTitle = c.Path,
-                    IcoPath = "Images\\globe.png",
                     Action = e =>
                         {
                             try
@@ -47,6 +52,11 @@ namespace Wox.Plugin.Runner
                 } );
             results.AddRange( matches );
             return results;
+        }
+
+        public Control CreateSettingPanel()
+        {
+            return new RunnerSettings( new RunnerSettingsViewModel( initContext ) );
         }
     }
 }
