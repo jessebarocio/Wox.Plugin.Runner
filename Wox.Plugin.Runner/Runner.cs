@@ -73,7 +73,10 @@ namespace Wox.Plugin.Runner
             {
                 var arguments = q.ActionParameters.ToList();
                 arguments.RemoveAt( 0 );
-                argString = String.Format( c.ArgumentsFormat, arguments.ToArray() );
+                if ( arguments.Count > 0 )
+                    argString = String.Format( c.ArgumentsFormat, arguments.ToArray() );
+                else
+                    argString = String.Empty;
             }
             return new ProcessArguments
             {
