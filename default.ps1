@@ -23,6 +23,18 @@ Task Release {
     echo "Release Complete"
 }
 
+Task IncrementVersion {
+    $assemblyInfo = "$baseDir\Wox.Plugin.Runner\Properties\AssemblyInfo.cs"
+    $rawContent = Get-Content $assemblyInfo -Raw
+    $regex = New-Object System.Text.RegularExpressions.Regex("([0-9]+\.){3}[0-9]+")
+    $version = $regex.Matches($rawContent)[0].Value
+    
+    $replaceRegex = New-Object System.Text.RegularExpressions.Regex("(?<=([0-9]+\.[0-9]+\.))[0-9](?=\.[0-9])")
+    $newVersion = $replaceRegex.Replace($version, ([int]($replaceRegex.Match($version).Value) + 1).ToString())
+    
+    $rawContent.Replace($version, $newVersion).Trim() | Out-File $assemblyInfo -Encoding UTF8
+}
+
 Task Package -depends Release {
     $releasePath = "$baseDir\Wox.Plugin.Runner\bin\Release"
     pushd $releasePath

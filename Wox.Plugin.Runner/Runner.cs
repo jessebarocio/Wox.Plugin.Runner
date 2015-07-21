@@ -14,7 +14,6 @@ namespace Wox.Plugin.Runner
     public class Runner : IPlugin, ISettingProvider
     {
         PluginInitContext initContext;
-
         IEnumerable<Command> commands = null;
 
         public void Init( PluginInitContext context )
@@ -34,21 +33,7 @@ namespace Wox.Plugin.Runner
             var matches = commands.Where( c => c.Shortcut.StartsWith( commandName ) ).Select( c => new Result()
                 {
                     Title = c.Description,
-                    Action = e =>
-                        {
-                            try
-                            {
-                                Process.Start( c.Path );
-                            }
-                            catch ( Win32Exception ex )
-                            {
-                                // If a command needs elevation and the user hits "No" on the UAC dialog an exception is thrown
-                                // with this message. We want to ignore this exception but throw any others.
-                                if ( ex.Message != "The operation was canceled by the user" )
-                                    throw;
-                            }
-                            return true;
-                        }
+                    Action = e => RunCommand( e, query, c )
                 } );
             results.AddRange( matches );
             return results;
@@ -57,6 +42,50 @@ namespace Wox.Plugin.Runner
         public Control CreateSettingPanel()
         {
             return new RunnerSettings( new RunnerSettingsViewModel( initContext ) );
+        }
+
+        private static bool RunCommand( ActionContext e, Query query, Command command )
+        {
+            try
+            {
+                var args = GetProcessArguments( command, query );
+                Process.Start( args.FileName, args.Arguments );
+            }
+            catch ( Win32Exception w32Ex )
+            {
+                // If a command needs elevation and the user hits "No" on the UAC dialog an exception is thrown
+                // with this message. We want to ignore this exception but throw any others.
+                if ( w32Ex.Message != "The operation was canceled by the user" )
+                    throw;
+            }
+            catch ( FormatException )
+            {
+                SimpleIoc.Default.GetInstance<IMessageService>().ShowErrorMessage(
+                    "There was a problem. Please check the arguments format for the command." );
+            }
+            return true;
+        }
+
+        private static ProcessArguments GetProcessArguments( Command c, Query q )
+        {
+            string argString = String.Empty;
+            if ( !String.IsNullOrEmpty( c.ArgumentsFormat ) )
+            {
+                var arguments = q.ActionParameters.ToList();
+                arguments.RemoveAt( 0 );
+                argString = String.Format( c.ArgumentsFormat, arguments.ToArray() );
+            }
+            return new ProcessArguments
+            {
+                FileName = c.Path,
+                Arguments = argString
+            };
+        }
+
+        class ProcessArguments
+        {
+            public string FileName { get; set; }
+            public string Arguments { get; set; }
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Wox.Plugin.Runner.Settings
             description = command.Description;
             shortcut = command.Shortcut;
             path = command.Path;
+            argumentsFormat = command.ArgumentsFormat;
         }
 
         public Command Command { get; set; }
@@ -60,6 +61,19 @@ namespace Wox.Plugin.Runner.Settings
             }
         }
 
+        private string argumentsFormat;
+        public string ArgumentsFormat
+        {
+            get
+            {
+                return argumentsFormat;
+            }
+            set
+            {
+                Set( () => ArgumentsFormat, ref argumentsFormat, value );
+            }
+        }
+
         private bool isDirty = false;
         public bool IsDirty
         {
@@ -82,7 +96,8 @@ namespace Wox.Plugin.Runner.Settings
                 {
                     Description = Description,
                     Shortcut = Shortcut,
-                    Path = Path
+                    Path = Path,
+                    ArgumentsFormat = ArgumentsFormat
                 };
         }
 
@@ -91,7 +106,8 @@ namespace Wox.Plugin.Runner.Settings
             IsDirty =
                 ( Description != Command.Description ) ||
                 ( Shortcut != Command.Shortcut ) ||
-                ( Path != Command.Path );
+                ( Path != Command.Path ) ||
+                ( ArgumentsFormat != Command.ArgumentsFormat );
         }
     }
 }
