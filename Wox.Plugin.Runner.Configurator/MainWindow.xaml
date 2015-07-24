@@ -1,0 +1,13 @@
+﻿<Window x:Class="Wox.Plugin.Runner.Configurator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:runner="clr-namespace:Wox.Plugin.Runner.Settings;assembly=Wox.Plugin.Runner"
+        xmlns:this="clr-namespace:Wox.Plugin.Runner.Configurator"
+        Title="Configurator" Height="414" Width="670">
+    <Window.DataContext>
+        <this:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <runner:RunnerSettings DataContext="{Binding SettingsViewModel}" />
+    </Grid>
+</Window>
