@@ -29,6 +29,7 @@ namespace Wox.Plugin.Runner
         public List<Result> Query( Query query )
         {
             var results = new List<Result>();
+            if (query.ActionParameters.Count == 0) return results;
             var commandName = query.ActionParameters[0];
             var matches = commands.Where( c => c.Shortcut.StartsWith( commandName ) ).Select( c => new Result()
                 {
