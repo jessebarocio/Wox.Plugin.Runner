@@ -14,7 +14,6 @@ namespace Wox.Plugin.Runner
     public class Runner : IPlugin, ISettingProvider
     {
         PluginInitContext initContext;
-        IEnumerable<Command> commands = null;
 
         public void Init( PluginInitContext context )
         {
@@ -23,15 +22,15 @@ namespace Wox.Plugin.Runner
                 SimpleIoc.Default.Register<IMessageService>( () => new MessageService() );
             }
             initContext = context;
-            commands = RunnerConfiguration.GetCommands();
         }
 
         public List<Result> Query( Query query )
         {
             var results = new List<Result>();
-            if (query.ActionParameters.Count == 0) return results;
-            var commandName = query.ActionParameters[0];
-            var matches = commands.Where( c => c.Shortcut.StartsWith( commandName ) ).Select( c => new Result()
+            if (query.Terms.Length < 2) return results;
+            var commandName = query.Terms[1];
+            var matches = RunnerConfiguration.Commands.Where( c => c.Shortcut.StartsWith( commandName ) )
+                .Select( c => new Result()
                 {
                     Title = c.Description,
                     Action = e => RunCommand( e, query, c )
@@ -72,7 +71,7 @@ namespace Wox.Plugin.Runner
             string argString = String.Empty;
             if ( !String.IsNullOrEmpty( c.ArgumentsFormat ) )
             {
-                var arguments = q.ActionParameters.ToList();
+                var arguments = q.Terms.ToList();
                 arguments.RemoveAt( 0 );
                 if ( arguments.Count > 0 )
                     argString = String.Format( c.ArgumentsFormat, arguments.ToArray() );

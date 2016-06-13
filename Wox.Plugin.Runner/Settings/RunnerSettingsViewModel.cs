@@ -36,7 +36,7 @@ namespace Wox.Plugin.Runner.Settings
         private void LoadCommands()
         {
             Commands = new ObservableCollection<CommandViewModel>(
-                RunnerConfiguration.GetCommands().Select( c => new CommandViewModel( c ) ) );
+                RunnerConfiguration.Commands.Select( c => new CommandViewModel( c ) ) );
         }
 
         private ObservableCollection<CommandViewModel> commands;
@@ -113,9 +113,8 @@ namespace Wox.Plugin.Runner.Settings
                     ?? ( saveChanges = new RelayCommand(
                     () =>
                     {
-                        RunnerConfiguration.SaveCommands( Commands.Select( c => c.GetCommand() ) );
-                        if ( pluginContext != null )
-                            pluginContext.API.ReloadPlugins();
+                        RunnerConfiguration.Commands = Commands.Select( c => c.GetCommand() );
+                        
                         SimpleIoc.Default.GetInstance<IMessageService>().ShowMessage( "Your changes have been saved!" );
                     } ) );
             }

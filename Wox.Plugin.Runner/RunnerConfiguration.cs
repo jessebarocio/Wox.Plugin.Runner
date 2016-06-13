@@ -22,6 +22,20 @@ namespace Wox.Plugin.Runner
             }
         }
 
+        private static IEnumerable<Command> commands;
+        public static IEnumerable<Command> Commands
+        {
+            get
+            {
+                return commands ?? ( commands = Loader.LoadCommands() );
+            }
+            set
+            {
+                commands = value;
+                Loader.SaveCommands( value );
+            }
+        }
+
         public static IEnumerable<Command> GetCommands()
         {
             return Loader.LoadCommands();
