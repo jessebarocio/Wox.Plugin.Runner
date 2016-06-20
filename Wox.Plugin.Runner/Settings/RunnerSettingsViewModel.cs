@@ -98,9 +98,12 @@ namespace Wox.Plugin.Runner.Settings
                     ?? ( delete = new RelayCommand(
                     () =>
                     {
-                        Commands.Remove( SelectedCommand );
-                        SelectedCommand = null;
-                    }, () => SelectedCommand != null ) );
+                        if ( SelectedCommand != null )
+                        {
+                            Commands.Remove( SelectedCommand );
+                            SelectedCommand = null;
+                        }
+                    } ) );
             }
         }
 
@@ -113,9 +116,17 @@ namespace Wox.Plugin.Runner.Settings
                     ?? ( saveChanges = new RelayCommand(
                     () =>
                     {
-                        RunnerConfiguration.Commands = Commands.Select( c => c.GetCommand() );
-                        
-                        SimpleIoc.Default.GetInstance<IMessageService>().ShowMessage( "Your changes have been saved!" );
+                        if ( Commands.Any( c => String.IsNullOrEmpty( c.Shortcut ) || String.IsNullOrEmpty( c.Path ) ) )
+                        {
+                            SimpleIoc.Default.GetInstance<IMessageService>()
+                            .ShowErrorMessage( 
+                                "One or more commands is missing a Shortcut or Path. Set a Shortcut and Path and try again." );
+                        }
+                        else
+                        {
+                            RunnerConfiguration.Commands = Commands.Select( c => c.GetCommand() );
+                            SimpleIoc.Default.GetInstance<IMessageService>().ShowMessage( "Your changes have been saved!" );
+                        }
                     } ) );
             }
         }
