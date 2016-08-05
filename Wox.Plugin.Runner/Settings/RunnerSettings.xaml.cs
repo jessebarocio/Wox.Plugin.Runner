@@ -1,18 +1,21 @@
 ﻿using GalaSoft.MvvmLight;
-using Microsoft.Win32;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace Wox.Plugin.Runner.Settings
 {
@@ -32,7 +35,7 @@ namespace Wox.Plugin.Runner.Settings
             DataContext = viewModel;
         }
 
-        private void btnBrowse_Click( object sender, RoutedEventArgs e )
+        private void btnBrowsePath_Click( object sender, RoutedEventArgs e )
         {
             var dialog = new OpenFileDialog();
             dialog.DereferenceLinks = false;
@@ -40,6 +43,15 @@ namespace Wox.Plugin.Runner.Settings
             if ( result == true )
             {
                 tbPath.Text = dialog.FileName;
+            }
+        }
+
+        private void btnBrowseWorkDir_Click( object sender, RoutedEventArgs e ) {
+            using (var dialog = new FolderBrowserDialog()) {
+                dialog.Description = "Select working directory";
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    tbWorkDir.Text = dialog.SelectedPath;
+                }
             }
         }
     }
