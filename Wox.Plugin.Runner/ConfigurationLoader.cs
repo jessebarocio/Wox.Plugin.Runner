@@ -51,13 +51,15 @@ namespace Wox.Plugin.Runner
                 {
                     Description = "Sample Command 1",
                     Shortcut = "shortcut1",
-                    Path = @"C:\mycommand1.exe"
+                    Path = @"C:\mycommand1.exe",
+                    WorkingDirectory = @"C:\workpath1"
                 },
                 new Command
                 {
                     Description = "Sample Command 2",
                     Shortcut = "shortcut2",
-                    Path = @"C:\mycommand2.exe"
+                    Path = @"C:\mycommand2.exe",
+                    WorkingDirectory = @"C:\workpath2"
                 }
             };
         }

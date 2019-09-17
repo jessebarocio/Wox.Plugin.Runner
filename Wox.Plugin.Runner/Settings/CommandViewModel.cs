@@ -14,6 +14,7 @@ namespace Wox.Plugin.Runner.Settings
             description = command.Description;
             shortcut = command.Shortcut;
             path = command.Path;
+            workingDirectory = command.WorkingDirectory;
             argumentsFormat = command.ArgumentsFormat;
         }
 
@@ -61,6 +62,20 @@ namespace Wox.Plugin.Runner.Settings
             }
         }
 
+        private string workingDirectory;
+
+        public string WorkingDirectory
+        {
+            get {
+                return workingDirectory;
+                
+            }
+            set {
+                Set(() => WorkingDirectory, ref workingDirectory, value);
+                CheckDirty();
+            }
+        }
+
         private string argumentsFormat;
         public string ArgumentsFormat
         {
@@ -97,6 +112,7 @@ namespace Wox.Plugin.Runner.Settings
                     Description = Description,
                     Shortcut = Shortcut,
                     Path = Path,
+                    WorkingDirectory = WorkingDirectory,
                     ArgumentsFormat = ArgumentsFormat
                 };
         }
@@ -107,6 +123,7 @@ namespace Wox.Plugin.Runner.Settings
                 ( Description != Command.Description ) ||
                 ( Shortcut != Command.Shortcut ) ||
                 ( Path != Command.Path ) ||
+                ( WorkingDirectory != Command.WorkingDirectory ) ||
                 ( ArgumentsFormat != Command.ArgumentsFormat );
         }
     }

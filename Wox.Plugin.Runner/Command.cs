@@ -10,6 +10,7 @@ namespace Wox.Plugin.Runner
         public string Shortcut { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public string WorkingDirectory { get; set; }
         public string ArgumentsFormat { get; set; }
     }
 }
