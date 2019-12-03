@@ -8,6 +8,6 @@
         <this:MainWindowViewModel />
     </Window.DataContext>
     <Grid>
-        <runner:RunnerSettings DataContext="{Binding SettingsViewModel}" />
+        <runner:RunnerSettings DataContext="{Binding SettingsViewModel}" Width="Auto" Height="Auto" />
     </Grid>
 </Window>

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using Wox.Plugin.Runner.Services;
 using Wox.Plugin.Runner.Settings;
@@ -14,6 +15,7 @@ namespace Wox.Plugin.Runner
     public class Runner : IPlugin, ISettingProvider
     {
         PluginInitContext initContext;
+        bool isGlobal;
 
         public void Init( PluginInitContext context )
         {
@@ -22,16 +24,19 @@ namespace Wox.Plugin.Runner
                 SimpleIoc.Default.Register<IMessageService>( () => new MessageService() );
             }
             initContext = context;
+            isGlobal = context.CurrentPluginMetadata.ActionKeywords.Contains(Plugin.Query.GlobalPluginWildcardSign);
         }
 
         public List<Result> Query( Query query )
         {
             var results = new List<Result>();
-            if (query.Terms.Length < 2) return results;
-            var commandName = query.Terms[1];
+            if (query.Terms.Length < 2 && !this.isGlobal) return results;
+
+            var commandName = query.Terms[isGlobal ? 0 : 1];
             var matches = RunnerConfiguration.Commands.Where( c => c.Shortcut.StartsWith( commandName ) )
                 .Select( c => new Result()
                 {
+                    Score = int.MaxValue / 2,
                     Title = c.Description,
                     Action = e => RunCommand( e, query, c )
                 } );
@@ -44,7 +49,7 @@ namespace Wox.Plugin.Runner
             return new RunnerSettings( new RunnerSettingsViewModel( initContext ) );
         }
 
-        private static bool RunCommand( ActionContext e, Query query, Command command )
+        private bool RunCommand( ActionContext e, Query query, Command command )
         {
             try
             {
@@ -66,15 +71,19 @@ namespace Wox.Plugin.Runner
             return true;
         }
 
-        private static ProcessArguments GetProcessArguments( Command c, Query q )
+        private ProcessArguments GetProcessArguments( Command c, Query q )
         {
             string argString = String.Empty;
             if ( !String.IsNullOrEmpty( c.ArgumentsFormat ) )
             {
                 var arguments = q.Terms.ToList();
-                arguments.RemoveAt( 0 );
+                //arguments.RemoveAt( 0 );
+                if ( !isGlobal )
+                    arguments.RemoveAt( 0 );
                 if ( arguments.Count > 0 )
+                {
                     argString = String.Format( c.ArgumentsFormat, arguments.ToArray() );
+                }
                 else
                     argString = String.Empty;
             }

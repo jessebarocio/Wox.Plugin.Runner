@@ -1,11 +1,12 @@
 ﻿<UserControl x:Class="Wox.Plugin.Runner.Settings.RunnerSettings"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:s="clr-namespace:Wox.Plugin.Runner.Settings"
              xmlns:infra="clr-namespace:Wox.Plugin.Runner.Infrastructure"
-             mc:Ignorable="d" Width="575" Height="326">
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <infra:NullToVisibilityConverter x:Key="nullToVisibilityConverter" />
         <Style x:Key="hcs" TargetType="{x:Type GridViewColumnHeader}">
@@ -13,7 +14,7 @@
             <Setter Property="Margin" Value="4,0,0,0"></Setter>
         </Style>
     </UserControl.Resources>
-    <Grid Margin="10">
+    <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -32,7 +33,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="3">
-                            <TextBlock Text="{Binding Description}" FontSize="16" />
+                            <TextBlock Text="{Binding Description}" FontSize="14" />
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} - {1}">
